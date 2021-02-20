@@ -15,6 +15,6 @@ data = {"0": {"type":1, "name" : "Derek"},
 
 for key, value in data.items():
     print(requests.post(BASE + "database/" + key, value).json())
-requests.post(BASE + "database/2", {"type": 2, "adjList": json.dumps({"3" : {"time" : "20:00", "location": "lolza"}})})
+# requests.post(BASE + "database/2", {"type" : 2, "location" : "lolza", "time" : "20:00", "list" : "3,1"})
 
-print(requests.get(BASE + "database/2").json())
+print(requests.get(BASE + "database/3").json())
