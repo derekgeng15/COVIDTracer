@@ -12,12 +12,14 @@ app.config['SECRET_KEY'] = "jtpdoerenjaraedsk"
 socketio = SocketIO(app)
 db = SQLAlchemy(app)
 
-
+@socketio.on("tracing")
+def sendMessage(location):
+    send(location)
 
 class User(db.Model):
     address = db.Column(db.String(12), primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    adjList = db.Column(db.String(500), nullable=False)
+    adjList = db.Column(db.String(1000), nullable=False)
     covid = db.Column(db.Boolean, nullable=False)
 
 post_parser = reqparse.RequestParser()
@@ -81,7 +83,7 @@ class DataBase(Resource):
 
         db.session.commit()
         return
-       
+    
     def delete(self, a):
         result = User.query.filter_by(address=a).first()
         if not result:
@@ -91,5 +93,9 @@ class DataBase(Resource):
 
 api.add_resource(DataBase, "/database/<string:a>")
 
+@app.route("/")
+def home():
+    return "Hello World"
+    
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host="0.0.0.0")
