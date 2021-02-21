@@ -1,9 +1,7 @@
-var csv = require('./jquery.csv.js');
-var accounts;
-function readAccountsCSV(){
-    accounts = $.csv.toObjects('./csvs/accounts');
-}
 
+console.log(accounts);
+var arr = accounts.split("|");
+console.log(arr.length)
 function initMap() {
     const myLatLng = { lat: 40.47607247512519, lng: -74.67328796340085 };
     const map = new google.maps.Map(document.getElementById('map'), {
@@ -90,27 +88,44 @@ function initMap() {
             }
         ]
     });
-    for(i = 0; i < 4; i++)
-        new google.maps.Marker({
-            position: {lat : 40.47607247512519 + i * 0.001, lng : -74.67328796340085 + i * 0.001},
+    let dic = new Map();
+    for(i = 1; i < arr.length - 1; i++){
+        usr = JSON.parse(arr[i])
+        dic.set(usr.address, {lat : usr.lat, lng : usr.lng})
+        console.log(dic.get(usr.address))   
+        if(!usr.covid)
+            new google.maps.Marker({
+                position: dic.get(usr.address),
+                map,
+                title: usr.name,
+                icon : { url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"} 
+            });
+        else 
+            new google.maps.Marker({
+            position: dic.get(usr.address),
             map,
-            title: 'Derek',
+            title: usr.name,
         });
+    }
     // new google.maps.Marker({
     //     position: { lat: 40.48337871907082, lng: -74.59945033152542 },
     //     map,
     //     title: 'Pradyun',
     // });
-    const line = new google.maps.Polyline({
-        path: [{ lat: 40.47607247512519, lng: -74.67328796340085 }, { lat: 40.48337871907082, lng: -74.59945033152542 }],
-        geodesic: true,
-        strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
-        strokeWeight: 2,
-        title: 'line'
-    });
-    line.setMap(map)
-}
+    for(i = 1; i < arr.length - 1; i++){
+        usr = JSON.parse(arr[i])
 
-readAccountsCSV()
-initMap()
+        for(v in usr.adjList){
+            const line = new google.maps.Polyline({
+                path: [ dic.get(usr.address) , dic.get(v)],
+                geodesic: true,
+                strokeColor: '#FF0000',
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+                title: 'line'
+            });
+            line.setMap(map)
+        }
+        
+    }
+}

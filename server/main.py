@@ -28,9 +28,8 @@ class User(db.Model):
     lng = db.Column(db.Float, nullable=False)
     covid = db.Column(db.Boolean, nullable=False)
     def __repr__(self):
-        return f'address: {self.address}, name: {self.name}, adjList: {self.adjList}, lat: {self.lat}, lng: {self.lng}, covid {self.covid}'
-db.create_all()
-
+        return f'"address": "{self.address}", "name": "{self.name}", "adjList": {self.adjList}, "lat": {self.lat}, "lng": {self.lng}, "covid" : {int(self.covid)}'
+# db.create_all()
 post_parser = reqparse.RequestParser()
 post_parser.add_argument('type', type=int, help='No post type given', required = True)
 post_parser.add_argument('name', type=str, help='No name given')
@@ -52,8 +51,11 @@ resource_fields = {
 }
 tracer = Tracer(len(User.query.all()))
 
-def sendWarning(address):
-    return
+def sendWarning(ad):
+    result = User.query.filter_by(address = ad).first()
+    result.covid = True
+    db.session.commit()
+
 class DataBase(Resource):
 
     @marshal_with(resource_fields)
@@ -114,7 +116,13 @@ api.add_resource(DataBase, '/database/<string:a>')
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    users = User.query.all()
+    data = "{ }|"
+    for usr in users:
+        data += f'{ {usr} }|'
+    data +="{ }"
+    print(data)
+    return render_template('index.html', data=data)
 
 @app.route('/login')
 def login():

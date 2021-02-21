@@ -30,6 +30,14 @@
         padding: 0;
       }
     </style>
+      <!-- <script type="text/javascript" src="{{url_for('static', filename = '../jaccounts.json')}}"></script> -->
+        <script type="text/javascript"> 
+          function func(vars){
+            vars = vars.replace(/\\/g, '')
+            return vars
+          }
+          var accounts = func('{{data|tojson}}')
+        </script>
         <script src="{{url_for('static', filename = 'scripts/script.js')}}"></script>
   </head>
   
@@ -52,6 +60,5 @@
       src='https://maps.googleapis.com/maps/api/js?key=AIzaSyCHQPbyBm2nIOGLFgyFrGCHvFWWxrWcWe4&callback=initMap&libraries=&v=weekly'
       async
     ></script>
-    <script src="jquery-csv.js"></script>
   </body>
 </html>
