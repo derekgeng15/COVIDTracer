@@ -29,7 +29,7 @@ class User(db.Model):
     covid = db.Column(db.Boolean, nullable=False)
     def __repr__(self):
         return f'"address": "{self.address}", "name": "{self.name}", "adjList": {self.adjList}, "lat": {self.lat}, "lng": {self.lng}, "covid" : {int(self.covid)}'
-# db.create_all()
+db.create_all()
 post_parser = reqparse.RequestParser()
 post_parser.add_argument('type', type=int, help='No post type given', required = True)
 post_parser.add_argument('name', type=str, help='No name given')
@@ -76,6 +76,7 @@ class DataBase(Resource):
             tracer.addAccount(user.address, user.name, int(user.covid))
             tracer.loadGraph()
             db.session.add(user)
+            result = user
         elif args['type'] == 2:
             if not result:
                 abort(404, message='User Address does not exists')
@@ -103,7 +104,7 @@ class DataBase(Resource):
                 for usr in li:
                     sendWarning(usr)
         db.session.commit()
-        return
+        return result
     
     def delete(self, a):
         result = User.query.filter_by(address=a).first()

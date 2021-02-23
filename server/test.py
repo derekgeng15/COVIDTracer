@@ -26,4 +26,5 @@ requests.post(BASE + 'database/C_', {'type' : 2, 'lat' : 40.47, 'lng' : -74.67, 
 requests.post(BASE + 'database/F_', {'type' : 2, 'lat' : 40.47, 'lng' : -74.67, 'list' : 'E_'})
 
 requests.post(BASE + 'database/G_', {'type' : 3, 'covid' : True})
-# print(requests.get(BASE + 'database/2').json())
+
+print(requests.get(BASE + 'database/2').json()) 
